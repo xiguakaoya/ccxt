@@ -611,7 +611,7 @@ module.exports = class Exchange {
         return this.quoteJsonNumbers ? responseBody.replace (/":([+.0-9eE-]+)([,}])/g, '":"$1"$2') : responseBody;
     }
 
-    async loadMarketsHelper (reload = false, params = {}) {
+    async loadMarketsHelper (reload = false, params = {}, newMarket = undefined) {
         if (!reload && this.markets) {
             if (!this.markets_by_id) {
                 return this.setMarkets (this.markets)
@@ -621,17 +621,35 @@ module.exports = class Exchange {
         let currencies = undefined
         // only call if exchange API provides endpoint (true), thus avoid emulated versions ('emulated')
         if (this.has.fetchCurrencies === true) {
-            currencies = await this.fetchCurrencies ()
+            currencies = await this.fetchCurrencies ();
         }
-        const markets = await this.fetchMarkets (params)
+        const markets = await this.fetchMarkets (params);
+        if(newMarket && !markets.find(item => item.symbol === newMarket.symbol)){
+            console.log('增加market');
+            if(currencies && !currencies[newMarket.baseId]){
+                console.log('增加currencies');
+                currencies[newMarket.baseId] = {
+                    "info": null,
+                    "code": newMarket.baseId, // id必须是大写
+                    "id": newMarket.baseId,
+                    "name": newMarket.baseId,
+                    "precision": newMarket.precision,
+                    "limits": {
+                        "amount": {}
+                    },
+                    "networks": null
+                }
+            }
+            markets.push(newMarket);
+        }
         return this.setMarkets (markets, currencies)
     }
 
-    loadMarkets (reload = false, params = {}) {
+    loadMarkets (reload = false, params = {}, newMarket = undefined) {
         // this method is async, it returns a promise
         if ((reload && !this.reloadingMarkets) || !this.marketsLoading) {
             this.reloadingMarkets = true
-            this.marketsLoading = this.loadMarketsHelper (reload, params).then ((resolved) => {
+            this.marketsLoading = this.loadMarketsHelper (reload, params, newMarket).then ((resolved) => {
                 this.reloadingMarkets = false
                 return resolved
             }, (error) => {
