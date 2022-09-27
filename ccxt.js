@@ -28,17 +28,17 @@ SOFTWARE.
 
 //-----------------------------------------------------------------------------
 
-const Exchange  = require ('./js/base/Exchange')
-    , Precise   = require ('./js/base/Precise')
-    , functions = require ('./js/base/functions')
-    , errors    = require ('./js/base/errors')
+const Exchange = require("./js/base/Exchange"),
+  Precise = require("./js/base/Precise"),
+  functions = require("./js/base/functions"),
+  errors = require("./js/base/errors");
 
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
 
-const version = '1.93.38'
+const version = "1.93.38";
 
-Exchange.ccxtVersion = version
+Exchange.ccxtVersion = version;
 
 //-----------------------------------------------------------------------------
 
@@ -164,10 +164,15 @@ const exchanges = {
     'zb':                      require ('./js/zb.js'),
     'zipmex':                  require ('./js/zipmex.js'),
     'zonda':                   require ('./js/zonda.js'),    
-}
+};
 
 //-----------------------------------------------------------------------------
 
-module.exports = Object.assign ({ version, Exchange, Precise, 'exchanges': Object.keys (exchanges) }, exchanges, functions, errors)
+module.exports = Object.assign(
+  { version, Exchange, Precise, exchanges: Object.keys(exchanges) },
+  exchanges,
+  functions,
+  errors
+);
 
 //-----------------------------------------------------------------------------
