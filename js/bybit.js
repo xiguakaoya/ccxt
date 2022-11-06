@@ -2120,6 +2120,7 @@ module.exports = class bybit extends Exchange {
         const request = {
             'symbol': market['id'],
         };
+        console.log('inner market', market);
         const isUsdcSettled = market['settle'] === 'USDC';
         let method = undefined;
         if (market['spot']) {
