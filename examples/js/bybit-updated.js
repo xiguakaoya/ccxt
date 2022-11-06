@@ -4,10 +4,23 @@ const ccxt = require ('../../ccxt');
 
 console.log ('CCXT Version:', ccxt.version)
 
-const exchange = new ccxt.bybit ({
-    'apiKey': 'YOUR_API_KEY',
-    'secret': 'YOUR_SECRET_KEY',
+const exchange = new ccxt.pro.bybit ({
+    'apiKey': 'apikey',
+    'secret': 'secret',
+    options: { "defaultType": "spot" }
 })
+
+const market = ccxt.makeNewMarket({
+    base: 'HFT',
+    quto: 'USDT',
+    pricePrecision: 0.01,
+    id: 'HFT' + 'USDT'
+  });
+
+ 
+  
+  exchange.loadMarkets(false, {}, market);
+  
 
 // Example 1: Spot : fetch balance, create order, cancel it and check canceled orders
 async function example1 () {
@@ -141,13 +154,40 @@ async function example4 () {
     console.log (cancelOrder);
 }
 
+
+async function example5 () { 
+    try {
+        console.log('2');
+        const response = await exchange.watchBalance();
+        console.log (new Date (), response)
+    } catch (e) {
+        console.log (e.constructor.name, e.message)
+        await exchange.sleep (1000)
+    }
+   
+}
+
+async function example5 () { 
+    try {
+        console.log('2');
+        const response = await exchange.fetchOrderBook('HFT/USDT');
+        console.log (new Date (), response)
+    } catch (e) {
+        console.log (e.constructor.name, e.message)
+        await exchange.sleep (1000)
+    }
+   
+}
+
+
 // -----------------------------------------------------------------------------------------
 
 async function main () {
-    await example1 ();
-    await example2 ();
-    await example3 ();
-    await example4 ();
+    // await example1 ();
+    // await example2 ();
+    // await example3 ();
+    // await example4 ();
+    await example5()
 
 }
 
